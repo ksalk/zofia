@@ -33,7 +33,7 @@ Console.WriteLine($"Trascribed audio into file: {outputTransciptPath}");
 // 4. Send transcript with user prompt to LLM
 Console.WriteLine($"");
 var transcript = await File.ReadAllTextAsync(outputTransciptPath);
-var llmResponse = CallLlmModelAsync(userPrompt, transcript);
+var llmResponse = await CallLlmModelAsync(userPrompt, transcript);
 
 // 5. Print LLM output
 Console.WriteLine($"LLM responded with:\n{llmResponse}");
@@ -69,7 +69,7 @@ static async Task<string> RunCommandAsync(string command, string arguments)
     return stdout;
 }
 
-static async Task CallLlmModelAsync(string userPrompt, string videoTranscript)
+static async Task<string> CallLlmModelAsync(string userPrompt, string videoTranscript)
 {
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("Authorization", "Bearer YOUR_OPENROUTER_API_KEY");
@@ -77,7 +77,7 @@ static async Task CallLlmModelAsync(string userPrompt, string videoTranscript)
     var prompt = $"{userPrompt}\nHere is the diarized video transcipt: {videoTranscript}";
     var body = new
     {
-        model = "openai/gpt-4o-mini",
+        model = "z-ai/glm-5.3-flash",
         messages = new[] { new { role = "user", content = prompt } }
     };
 
